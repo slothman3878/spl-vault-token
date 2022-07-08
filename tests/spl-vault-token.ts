@@ -12,7 +12,7 @@ import {
 import { VaultToken } from "../target/types/vault_token";
 import 'dotenv/config';
 
-const WALLET_PRIVATE_KEY = JSON.parse(process.env.WALLET_PRIVATE_KEY);
+const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
 
 describe("vault", () => {
   // Configure the client to use the local cluster.
