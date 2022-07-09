@@ -9,7 +9,7 @@ import {
   mintTo,
   getAccount, 
 } from "@solana/spl-token";
-import { VaultToken } from "../target/types/vault_token";
+import { SplVaultToken } from "../target/types/vault_token";
 import 'dotenv/config';
 
 const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
@@ -21,7 +21,7 @@ describe("vault", () => {
   const wallet = web3.Keypair.fromSecretKey(Uint8Array.from(WALLET_PRIVATE_KEY));
   anchor.setProvider(provider);
 
-  const program = anchor.workspace.VaultToken as Program<VaultToken>;
+  const program = anchor.workspace.SplVaultToken as Program<SplVaultToken>;
   const token_program: Program<SplToken> = Spl.token(provider);
 
   let token_mint: web3.PublicKey;

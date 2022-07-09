@@ -5,10 +5,10 @@ pub mod state;
 pub mod instructions;
 use instructions::*;
 
-declare_id!("Huw56BffRTDMQNkmPCnubrursxvKdHzPsWyc4M9LLQpM");
+declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]
-pub mod vault_token {
+pub mod spl_vault_token {
   use super::*;
 
   pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
