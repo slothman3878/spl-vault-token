@@ -9,7 +9,7 @@ import {
   mintTo,
   getAccount, 
 } from "@solana/spl-token";
-import { SplVaultToken } from "../target/types/vault_token";
+import { SplVaultToken } from "../target/types/spl_vault_token";
 import 'dotenv/config';
 
 const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
