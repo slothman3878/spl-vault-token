@@ -19,7 +19,10 @@ default = []
 overflow-checks = true
 
 [dependencies]
-anchor-lang = {version="0.25.0"}
-anchor-spl  = "0.25.0"
+anchor-lang = { git="https://github.com/project-serum/anchor", version="0.25.0" }
+anchor-spl  = { git="https://github.com/project-serum/anchor", version="0.25.0" }
+solana-program = {version="1.10.29"}
+spl-token = {version="3.3.0"}
+rust_decimal = {version="1.25.0"}
 num-traits = "0.2"
 num-derive = "0.3"

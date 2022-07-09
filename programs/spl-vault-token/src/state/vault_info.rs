@@ -10,9 +10,6 @@ pub struct VaultInfo{
   pub vault_info_bump: u8,
   pub pool_bump: u8,
   pub pool: Pubkey,
-  //
-  pub strategy_token_bump: u8,
-  pub strategy_token_account: Pubkey,
 }
 
 impl VaultInfo {
