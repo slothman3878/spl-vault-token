@@ -9,9 +9,9 @@ pub fn collateral_to_liquidity(
   collateral_amount: u64,
 ) -> Result<u64, VaultTokenError> {
   let liquidity_amount = Decimal::from(collateral_amount)
-    .checked_div(Decimal::from(total_collateral))
+    .checked_div(Decimal::from(total_collateral+1))
     .ok_or(VaultTokenError::ConversionError)?
-    .checked_mul(Decimal::from(total_liquidity))
+    .checked_mul(Decimal::from(total_liquidity+1))
     .ok_or(VaultTokenError::ConversionError)?
     .floor()
     .to_u64()
@@ -25,9 +25,9 @@ pub fn liquidity_to_collateral(
   liquidity_amount: u64,
 ) -> Result<u64, VaultTokenError> {
   let collateral_amount = Decimal::from(liquidity_amount)
-    .checked_div(Decimal::from(total_liquidity))
+    .checked_div(Decimal::from(total_liquidity+1))
     .ok_or(VaultTokenError::ConversionError)?
-    .checked_mul(Decimal::from(total_collateral))
+    .checked_mul(Decimal::from(total_collateral+1))
     .ok_or(VaultTokenError::ConversionError)?
     .floor()
     .to_u64()

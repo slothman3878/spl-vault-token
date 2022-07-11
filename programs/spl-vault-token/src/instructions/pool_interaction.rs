@@ -7,7 +7,7 @@ use anchor_spl::{
   },
 };
 use crate::utils::{
-  collateral_to_liquidity,
+  //collateral_to_liquidity,
   liquidity_to_collateral,
 };
 
