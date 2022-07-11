@@ -3,6 +3,7 @@ use anchor_lang::prelude::*;
 pub mod state;
 pub mod instructions;
 pub mod errors;
+pub mod utils;
 use instructions::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");

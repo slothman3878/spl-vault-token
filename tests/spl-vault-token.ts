@@ -69,7 +69,7 @@ describe("vault", () => {
       systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: web3.SYSVAR_RENT_PUBKEY,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      // associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
     }).signers([]).rpc();
     let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     console.log('difference is', old_balance - new_balance);

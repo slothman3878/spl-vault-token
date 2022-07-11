@@ -4,9 +4,6 @@ use anchor_spl::{
     Mint, 
     Token, 
     TokenAccount,
-  }, 
-  associated_token::{
-    AssociatedToken,
   },
 };
 
@@ -56,7 +53,7 @@ pub struct Initialize<'info> {
 
   pub system_program: Program<'info, System>,
   pub token_program: Program<'info, Token>,
-  pub associated_token_program: Program<'info, AssociatedToken>,
+  // pub associated_token_program: Program<'info, AssociatedToken>,
   pub rent: Sysvar<'info, Rent>,
 }
 

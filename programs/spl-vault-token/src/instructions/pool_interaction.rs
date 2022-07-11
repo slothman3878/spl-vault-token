@@ -1,15 +1,18 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
-  // associated_token::ID,
   token::{
     Mint, 
     Token, 
     TokenAccount,
   },
 };
+use crate::utils::{
+  collateral_to_liquidity,
+  liquidity_to_collateral,
+};
 
 use crate::state::{VaultInfo};
-use crate::errors::VaultTokenError;
+//use crate::errors::VaultTokenError;
 
 #[derive(Accounts)]
 #[instruction(
@@ -63,11 +66,6 @@ pub fn deposit_handler(ctx: Context<PoolInteraction>, amount: u64) -> Result<()>
   
   let pool = &mut ctx.accounts.pool;
   let vault_token_mint = &mut ctx.accounts.vault_token_mint;
-  
-  // it might be best if we calculate this elsewhere...
-  let vault_token_supply: u64 = vault_token_mint.supply;
-  let pool_balance: u64 = pool.amount;
-  let collateral_to_liquidity = vault_token_supply / pool_balance;
 
   // cross program calls
   anchor_spl::token::mint_to(
@@ -82,7 +80,11 @@ pub fn deposit_handler(ctx: Context<PoolInteraction>, amount: u64) -> Result<()>
         b"vault_token_mint", vault_info.key().as_ref(),
         &[vault_info.vault_token_mint_bump],
       ]],
-    ), amount / 2,
+    ), liquidity_to_collateral(
+      vault_token_mint.supply,
+      pool.amount,
+      amount,
+    )?,
   )?;
 
   anchor_spl::token::transfer(
@@ -121,7 +123,6 @@ pub fn withdraw_handler(ctx: Context<PoolInteraction>, amount: u64) -> Result<()
 
   // checks
   // require_keys_eq!(token_program.key(), ID, VaultTokenError::UnknownError); // unnecessary check
-
   // cross program calls
   anchor_spl::token::burn(
     CpiContext::new(
@@ -131,7 +132,11 @@ pub fn withdraw_handler(ctx: Context<PoolInteraction>, amount: u64) -> Result<()
         mint: vault_token_mint.to_account_info(),
         from: withdrawer_vault_token_account.to_account_info(),
       },
-    ), amount / 2
+    ), liquidity_to_collateral(
+      vault_token_mint.supply,
+      pool.amount,
+      amount,
+    )?
   )?;
 
   anchor_spl::token::transfer(
@@ -148,6 +153,41 @@ pub fn withdraw_handler(ctx: Context<PoolInteraction>, amount: u64) -> Result<()
       ]],
     ), amount,
   )?;
+
+  // alternative invocation
+  // let ix_burn = spl_token::instruction::burn(
+  //   &anchor_spl::token::ID, 
+  //   &withdrawer_vault_token_account.key(), 
+  //   &vault_token_mint.key(), 
+  //   &withdrawer.key(), 
+  //   &[&withdrawer.key()], 
+  //   amount/2
+  // )?;
+  // solana_program::program::invoke(
+  //   &ix_burn, &[
+  //     withdrawer.to_account_info(),
+  //     vault_token_mint.to_account_info(),
+  //     withdrawer_vault_token_account.to_account_info(),
+  //   ])?;
+
+  // let ix_transfer = spl_token::instruction::transfer(
+  //   &anchor_spl::token::ID, 
+  //   &pool.key(), 
+  //   &withdrawer_token_account.key(), 
+  //   &pool.key(), 
+  //   &[&pool.key()], 
+  //   amount
+  // )?;
+  // solana_program::program::invoke_signed(
+  //   &ix_transfer, &[
+  //     pool.to_account_info(),
+  //     pool.to_account_info(),
+  //     withdrawer_token_account.to_account_info(),
+  //   ], 
+  //   &[&[
+  //     b"pool", vault_info.key().as_ref(),
+  //     &[vault_info.pool_bump],
+  //   ]],)?;
 
   // reload updated accounts
   vault_token_mint.reload()?;
