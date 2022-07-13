@@ -1279,6 +1279,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "spl-vault-token"
+version = "0.1.0"
+source = "git+https://github.com/slothmanxyz/spl-vault-token#78fb779b656855a689410b71e158db889a379e5c"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "num-derive",
+ "num-traits",
+ "rust_decimal",
+ "solana-program",
+ "spl-token",
+]
+
+[[package]]
 name = "subtle"
 version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1341,6 +1355,15 @@ name = "unicode-segmentation"
 version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7e8820f5d777f6224dc4be3632222971ac30164d4a258d595640799554ebfd99"
+
+[[package]]
+name = "vault-relayer"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "spl-vault-token 0.1.0 (git+https://github.com/slothmanxyz/spl-vault-token)",
+]
 
 [[package]]
 name = "version_check"
