@@ -20,7 +20,7 @@ pub mod vault_relayer {
           vault_token_mint: remaining_accounts[2].to_account_info(),
           vault_info: remaining_accounts[3].to_account_info(),
           pool: remaining_accounts[4].to_account_info(),
-          token_program: remaining_accounts[7].to_account_info(),
+          token_program: remaining_accounts[5].to_account_info(),
         }
       ), amount)?;
     Ok(())

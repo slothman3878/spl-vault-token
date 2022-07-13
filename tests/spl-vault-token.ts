@@ -144,7 +144,7 @@ describe("vault", () => {
     const tx_relay_deposit = await relay_program.methods.relayDeposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
     }).remainingAccounts([
-      ...deposit_ix.keys,
+      ...deposit_ix.keys.slice(1),
       {
         pubkey: deposit_ix.programId,
         isSigner: false,
