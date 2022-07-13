@@ -14,8 +14,8 @@ pub struct VaultInfo{
 
 impl VaultInfo {
   pub fn size() -> usize {
-    32 * 5
-    + 8 * 4
+    32 * 4
+    + 8 * 3
     + 8
   }
 }

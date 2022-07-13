@@ -27,7 +27,9 @@ describe("vault", () => {
   let token_mint: web3.PublicKey;
   let token_account: web3.PublicKey;
 
-  beforeEach(async()=>{
+  let vault_info, vault_info_bump, pool, pool_bump, vault_token_mint, vault_token_mint_bump;
+
+  beforeEach('initialize vault', async()=>{
     token_mint = await createMint(
       connection, wallet, wallet.publicKey, wallet.publicKey, 6
     );
@@ -37,25 +39,21 @@ describe("vault", () => {
     await mintTo(
       connection, wallet, token_mint, token_account, wallet.publicKey, 100000000
     );
-  })
-
-  it('Vault Initialize', async ()=>{
-    let [vault_info, vault_info_bump] = await web3.PublicKey.findProgramAddress(
+    [vault_info, vault_info_bump] = await web3.PublicKey.findProgramAddress(
       [Buffer.from('vault_info', 'utf-8'),
       token_mint.toBuffer(),],
       program.programId
     );
-    let [pool, pool_bump] = (await web3.PublicKey.findProgramAddress(
+    [pool, pool_bump] = await web3.PublicKey.findProgramAddress(
       [Buffer.from('pool', 'utf-8'),
       vault_info.toBuffer()],
       program.programId
-    ));
-    let [vault_token_mint, vault_token_mint_bump] = await web3.PublicKey.findProgramAddress(
+    );
+    [vault_token_mint, vault_token_mint_bump] = await web3.PublicKey.findProgramAddress(
       [Buffer.from('vault_token_mint', 'utf-8'),
       vault_info.toBuffer()],
       program.programId
     );
-
     const authority = provider.wallet;
     // Add your test here.
     let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
@@ -73,12 +71,15 @@ describe("vault", () => {
     }).signers([]).rpc();
     let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     console.log('difference is', old_balance - new_balance);
+  })
 
-    old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+  it('Pool interaction', async ()=>{
+    const authority = provider.wallet;
+    let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     const vault_token_account = await createAssociatedTokenAccount(
       connection, wallet, vault_token_mint, wallet.publicKey
     );
-    new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+    let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     console.log('difference is', old_balance - new_balance);
 
     old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
