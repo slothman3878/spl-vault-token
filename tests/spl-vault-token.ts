@@ -128,25 +128,15 @@ describe("vault", () => {
   })
 
   it("CPI test", async()=>{
-    const deposit_ix = await program.methods.deposit(new anchor.BN(10e6)).accounts({
-      owner: wallet.publicKey,
-      tokenAccount: token_account,
-      vaultTokenAccount: vault_token_account,
-
-      pool: pool,
-      vaultTokenMint: vault_token_mint,
-      vaultInfo: vault_info,
-      tokenProgram: token_program.programId,
-    }).instruction();
-
     const authority = provider.wallet;
-    const tx_relay_deposit = await relay_program.methods.relayDeposit(new anchor.BN(10e6)).accounts({
+    let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+
+    const tx_deposit = await relay_program.methods.deposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
       sourceLiquidityAccount: token_account,
       destinationCollateralAccount: vault_token_account,
       tokenProgram: token_program.programId,
     }).remainingAccounts([
-      //...deposit_ix.keys.slice(3,6),[
       {
         pubkey: vault_token_mint,
         isSigner: false,
@@ -165,7 +155,9 @@ describe("vault", () => {
         isWritable: false,
       },
     ]).signers([
-      wallet
+      wallet,
     ]).rpc();
+    let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+    console.log('difference is', old_balance - new_balance);
   })
 });

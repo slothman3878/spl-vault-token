@@ -10,7 +10,7 @@ declare_id!("MqUazenmqvR1S2T9aNh9eeKY1yWMy3KG8fQRWTXRb6L");
 pub mod vault_relayer {
   use super::*;
 
-  pub fn relay_deposit<'info>(ctx: Context<'_, '_, '_, 'info, RelayDeposit<'info>>, amount: u64) -> Result<()> {
+  pub fn deposit<'info>(ctx: Context<'_, '_, '_, 'info, Deposit<'info>>, amount: u64) -> Result<()> {
     //let owner = &ctx.accounts.owner;
     let remaining_accounts = ctx.remaining_accounts;
 
@@ -32,7 +32,7 @@ pub mod vault_relayer {
 }
 
 #[derive(Accounts)]
-pub struct RelayDeposit<'info>{
+pub struct Deposit<'info>{
   pub owner: Signer<'info>,
   #[account(
     mut,
