@@ -31,7 +31,7 @@ pub fn deposit_handler<'a, 'b, 'c, 'info,>(
 
   spl_vault_token::cpi::deposit(
     CpiContext::new(
-      ctx.remaining_accounts[3].to_account_info(),
+      remaining_accounts[3].to_account_info(),
       spl_vault_token::cpi::accounts::PoolInteraction {
         owner: ctx.accounts.owner.to_account_info(),
         token_account: ctx.accounts.source_liquidity_account.to_account_info(),
