@@ -10,9 +10,8 @@ import {
   getAccount, 
 } from "@solana/spl-token";
 import { SplVaultToken } from "../target/types/spl_vault_token";
-import 'dotenv/config';
-import * as WALLET from "../wallet.json";
 import { VaultRelayer } from "../target/types/vault_relayer";
+import 'dotenv/config';
 
 const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
 
@@ -78,7 +77,7 @@ describe("vault", () => {
     );
   })
 
-  it('Vault Initialize', async ()=>{
+  it('Pool Interaction', async ()=>{
     const authority = provider.wallet;
     let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     const tx_deposit = await program.methods.deposit(new anchor.BN(10e6)).accounts({
