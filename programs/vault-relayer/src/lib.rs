@@ -4,7 +4,7 @@ use anchor_spl::token::{
   Token,
 };
 
-declare_id!("MqUazenmqvR1S2T9aNh9eeKY1yWMy3KG8fQRWTXRb6L");
+declare_id!("4iT8Sw1YvbmtRR8qj8ZDwf8J74rxRUTGVHn9vLNHk6FF");
 
 #[program]
 pub mod vault_relayer {

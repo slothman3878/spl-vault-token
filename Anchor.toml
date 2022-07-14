@@ -3,7 +3,7 @@ seeds = false
 skip-lint = false
 [programs.localnet]
 spl_vault_token = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
-vault_relayer = "MqUazenmqvR1S2T9aNh9eeKY1yWMy3KG8fQRWTXRb6L"
+vault_relayer = "4iT8Sw1YvbmtRR8qj8ZDwf8J74rxRUTGVHn9vLNHk6FF"
 
 [registry]
 url = "https://api.apr.dev"
