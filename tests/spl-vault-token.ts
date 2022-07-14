@@ -11,6 +11,8 @@ import {
 } from "@solana/spl-token";
 import { SplVaultToken } from "../target/types/spl_vault_token";
 import 'dotenv/config';
+import * as WALLET from "../wallet.json";
+import { VaultRelayer } from "../target/types/vault_relayer";
 
 const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
 
@@ -22,12 +24,14 @@ describe("vault", () => {
   anchor.setProvider(provider);
 
   const program = anchor.workspace.SplVaultToken as Program<SplVaultToken>;
+  const relay_program = anchor.workspace.VaultRelayer as Program<VaultRelayer>;
   const token_program: Program<SplToken> = Spl.token(provider);
 
   let token_mint: web3.PublicKey;
   let token_account: web3.PublicKey;
-
-  let vault_info, vault_info_bump, pool, pool_bump, vault_token_mint, vault_token_mint_bump;
+  let vault_token_account: web3.PublicKey;
+  let vault_info, pool, vault_token_mint: web3.PublicKey;
+  let vault_info_bump, pool_bump, vault_token_mint_bump: number;
 
   beforeEach('initialize vault', async()=>{
     token_mint = await createMint(
@@ -56,7 +60,6 @@ describe("vault", () => {
     );
     const authority = provider.wallet;
     // Add your test here.
-    let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     const tx = await program.methods.initialize().accounts({
       vaultInfo: vault_info,
       pool: pool,
@@ -69,20 +72,15 @@ describe("vault", () => {
       rent: web3.SYSVAR_RENT_PUBKEY,
       // associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
     }).signers([]).rpc();
-    let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
-    console.log('difference is', old_balance - new_balance);
-  })
 
-  it('Pool interaction', async ()=>{
-    const authority = provider.wallet;
-    let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
-    const vault_token_account = await createAssociatedTokenAccount(
+    vault_token_account = await createAssociatedTokenAccount(
       connection, wallet, vault_token_mint, wallet.publicKey
     );
-    let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
-    console.log('difference is', old_balance - new_balance);
+  })
 
-    old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+  it('Vault Initialize', async ()=>{
+    const authority = provider.wallet;
+    let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     const tx_deposit = await program.methods.deposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
       tokenAccount: token_account,
@@ -95,7 +93,7 @@ describe("vault", () => {
     }).signers([
       wallet,
     ]).rpc();
-    new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+    let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     console.log('difference is', old_balance - new_balance);
 
     console.log('token balance:', (await getAccount(
@@ -127,5 +125,47 @@ describe("vault", () => {
     console.log('vault token balance:', (await getAccount(
       connection, vault_token_account,
     )).amount)
+  })
+
+  it("CPI test", async()=>{
+    const deposit_ix = await program.methods.deposit(new anchor.BN(10e6)).accounts({
+      owner: wallet.publicKey,
+      tokenAccount: token_account,
+      vaultTokenAccount: vault_token_account,
+
+      pool: pool,
+      vaultTokenMint: vault_token_mint,
+      vaultInfo: vault_info,
+      tokenProgram: token_program.programId,
+    }).instruction();
+
+    const authority = provider.wallet;
+    const tx_relay_deposit = await relay_program.methods.relayDeposit(new anchor.BN(10e6)).accounts({
+      owner: wallet.publicKey,
+      tokenAccount: token_account,
+      vaultTokenAccount: vault_token_account,
+      tokenProgram: token_program.programId,
+    }).remainingAccounts([
+      //...deposit_ix.keys.slice(3,6),
+      {
+        pubkey: vault_token_mint,
+        isSigner: false,
+        isWritable: true
+      },{
+        pubkey: vault_info,
+        isSigner: false,
+        isWritable: false,
+      },{
+        pubkey: pool,
+        isSigner: false,
+        isWritable: true,
+      },{
+        pubkey: deposit_ix.programId,
+        isSigner: false,
+        isWritable: false,
+      }
+    ]).signers([
+      wallet
+    ]).rpc();
   })
 });
