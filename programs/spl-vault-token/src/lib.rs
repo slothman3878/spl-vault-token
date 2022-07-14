@@ -6,7 +6,7 @@ pub mod errors;
 pub mod utils;
 use instructions::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("DtSYEGH3LiHBebux3Lo6LuXoNMM32xBuVvE3nmZv9BF1");
 
 #[program]
 pub mod spl_vault_token {
