@@ -138,6 +138,8 @@ describe("spl-token-vault", () => {
     const authority = provider.wallet;
 
     let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+    console.log(program.programId);
+
     const tx_deposit = await wrapper_program.methods.deposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
       sourceLiquidityAccount: token_account,
