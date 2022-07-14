@@ -19,8 +19,8 @@ pub mod vault_relayer {
         remaining_accounts[3].to_account_info(), 
         spl_vault_token::cpi::accounts::PoolInteraction {
           owner: ctx.accounts.owner.to_account_info(),
-          token_account: ctx.accounts.token_account.to_account_info(),
-          vault_token_account: ctx.accounts.vault_token_account.to_account_info(),
+          token_account: ctx.accounts.source_liquidity_account.to_account_info(),
+          vault_token_account: ctx.accounts.destination_collateral_account.to_account_info(),
           vault_token_mint: remaining_accounts[0].to_account_info(),
           vault_info: remaining_accounts[1].to_account_info(),
           pool: remaining_accounts[2].to_account_info(),
@@ -38,12 +38,12 @@ pub struct RelayDeposit<'info>{
     mut,
     has_one = owner,
   )]
-  pub token_account: Box<Account<'info, TokenAccount>>,
+  pub source_liquidity_account: Box<Account<'info, TokenAccount>>,
   #[account(
     mut,
     has_one = owner,
   )]
-  pub vault_token_account: Box<Account<'info, TokenAccount>>,
+  pub destination_collateral_account: Box<Account<'info, TokenAccount>>,
 
   pub token_program: Program<'info, Token>,
 }
