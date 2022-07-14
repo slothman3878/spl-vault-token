@@ -138,14 +138,28 @@ describe("vault", () => {
       vaultInfo: vault_info,
       tokenProgram: token_program.programId,
     }).instruction();
-    //console.log(cpi_accounts);
 
     const authority = provider.wallet;
     const tx_relay_deposit = await relay_program.methods.relayDeposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
+      tokenAccount: token_account,
+      vaultTokenAccount: vault_token_account,
+      tokenProgram: token_program.programId,
     }).remainingAccounts([
-      ...deposit_ix.keys.slice(1),
+      //...deposit_ix.keys.slice(3,6),
       {
+        pubkey: vault_token_mint,
+        isSigner: false,
+        isWritable: true
+      },{
+        pubkey: vault_info,
+        isSigner: false,
+        isWritable: false,
+      },{
+        pubkey: pool,
+        isSigner: false,
+        isWritable: true,
+      },{
         pubkey: deposit_ix.programId,
         isSigner: false,
         isWritable: false,
