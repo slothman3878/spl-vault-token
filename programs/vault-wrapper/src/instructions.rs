@@ -24,7 +24,7 @@ pub struct Deposit<'info> {
 }
 
 pub fn deposit_handler<'a, 'b, 'c, 'info,>(
-  ctx: Context<'a, 'b, 'c, 'info, Deposit<'info>>, 
+  ctx: Context<'_, '_, '_, 'info, Deposit<'info>>, 
   amount: u64
 ) -> Result<()> {
   let remaining_accounts = ctx.remaining_accounts;
