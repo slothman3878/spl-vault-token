@@ -5,12 +5,6 @@ use anchor_spl::{
     TokenAccount,
   },
 };
-use solana_program::{
-  instruction::*,
-  program::{
-    invoke
-  },
-};
 
 #[derive(Accounts)]
 pub struct Deposit<'info> {
