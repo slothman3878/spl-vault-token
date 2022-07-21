@@ -6,7 +6,7 @@ pub mod errors;
 pub mod utils;
 use instructions::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("DtSYEGH3LiHBebux3Lo6LuXoNMM32xBuVvE3nmZv9BF1");
 
 #[program]
 pub mod spl_vault_token {
@@ -20,7 +20,15 @@ pub mod spl_vault_token {
     pool_interaction::deposit_handler(ctx, amount)
   }
 
+  pub fn mint_to(ctx: Context<PoolInteraction>, amount: u64) -> Result<()> {
+    pool_interaction::deposit_handler(ctx, amount)
+  }
+
   pub fn withdraw(ctx: Context<PoolInteraction>, amount: u64) -> Result<()> {
+    pool_interaction::withdraw_handler(ctx, amount)
+  }
+
+  pub fn redeem(ctx: Context<PoolInteraction>, amount: u64) -> Result<()> {
     pool_interaction::withdraw_handler(ctx, amount)
   }
 }

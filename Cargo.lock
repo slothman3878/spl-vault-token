@@ -1362,6 +1362,8 @@ version = "0.1.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
+ "solana-program",
+ "spl-token",
  "spl-vault-token 0.1.0 (git+https://github.com/slothmanxyz/spl-vault-token)",
 ]
 

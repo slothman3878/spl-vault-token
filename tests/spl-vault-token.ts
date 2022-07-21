@@ -139,6 +139,7 @@ describe("spl-token-vault", () => {
 
     let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
 
+    /*
     const tx_deposit = await wrapper_program.methods.deposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
       sourceLiquidityAccount: token_account,
@@ -164,7 +165,15 @@ describe("spl-token-vault", () => {
       },
     ]).signers([
       wallet,
-    ]).rpc();
+    ]).rpc();*/
+
+    let buffer = (await wrapper_program.methods.deposit(new anchor.BN(10e6)).accounts({
+      owner: wallet.publicKey,
+      sourceLiquidityAccount: token_account,
+      destinationCollateralAccount: vault_token_account,
+      tokenProgram: token_program.programId,
+    }).instruction()).data;
+    console.log('buffer', buffer);
     let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     console.log('difference is', old_balance - new_balance);
   })

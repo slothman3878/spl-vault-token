@@ -15,9 +15,9 @@ use crate::state::{VaultInfo};
 //use crate::errors::VaultTokenError;
 
 #[derive(Accounts)]
-#[instruction(
-  amount: u8,
-)]
+// #[instruction(
+//   amount: u8,
+// )]
 pub struct PoolInteraction<'info> {
   pub owner: Signer<'info>,
 
@@ -155,39 +155,39 @@ pub fn withdraw_handler(ctx: Context<PoolInteraction>, amount: u64) -> Result<()
   )?;
 
   // alternative invocation
-  // let ix_burn = spl_token::instruction::burn(
-  //   &anchor_spl::token::ID, 
-  //   &withdrawer_vault_token_account.key(), 
-  //   &vault_token_mint.key(), 
-  //   &withdrawer.key(), 
-  //   &[&withdrawer.key()], 
-  //   amount/2
-  // )?;
-  // solana_program::program::invoke(
-  //   &ix_burn, &[
-  //     withdrawer.to_account_info(),
-  //     vault_token_mint.to_account_info(),
-  //     withdrawer_vault_token_account.to_account_info(),
-  //   ])?;
+  let ix_burn = spl_token::instruction::burn(
+    &anchor_spl::token::ID, 
+    &withdrawer_vault_token_account.key(), 
+    &vault_token_mint.key(), 
+    &withdrawer.key(), 
+    &[&withdrawer.key()], 
+    amount/2
+  )?;
+  solana_program::program::invoke(
+    &ix_burn, &[
+      withdrawer.to_account_info(),
+      vault_token_mint.to_account_info(),
+      withdrawer_vault_token_account.to_account_info(),
+    ])?;
 
-  // let ix_transfer = spl_token::instruction::transfer(
-  //   &anchor_spl::token::ID, 
-  //   &pool.key(), 
-  //   &withdrawer_token_account.key(), 
-  //   &pool.key(), 
-  //   &[&pool.key()], 
-  //   amount
-  // )?;
-  // solana_program::program::invoke_signed(
-  //   &ix_transfer, &[
-  //     pool.to_account_info(),
-  //     pool.to_account_info(),
-  //     withdrawer_token_account.to_account_info(),
-  //   ], 
-  //   &[&[
-  //     b"pool", vault_info.key().as_ref(),
-  //     &[vault_info.pool_bump],
-  //   ]],)?;
+  let ix_transfer = spl_token::instruction::transfer(
+    &anchor_spl::token::ID, 
+    &pool.key(), 
+    &withdrawer_token_account.key(), 
+    &pool.key(), 
+    &[&pool.key()], 
+    amount
+  )?;
+  solana_program::program::invoke_signed(
+    &ix_transfer, &[
+      pool.to_account_info(),
+      pool.to_account_info(),
+      withdrawer_token_account.to_account_info(),
+    ], 
+    &[&[
+      b"pool", vault_info.key().as_ref(),
+      &[vault_info.pool_bump],
+    ]],)?;
 
   // reload updated accounts
   vault_token_mint.reload()?;
