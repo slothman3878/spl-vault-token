@@ -1366,6 +1366,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "vault-wrapper"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "solana-program",
+ "spl-token",
+ "spl-vault-token 0.1.0 (git+https://github.com/slothmanxyz/spl-vault-token)",
+]
+
+[[package]]
 name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"

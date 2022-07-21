@@ -1,0 +1,23 @@
+[package]
+name = "vault-wrapper"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "vault_wrapper"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = { git="https://github.com/project-serum/anchor", version="0.25.0" }
+anchor-spl  = { git="https://github.com/project-serum/anchor", version="0.25.0" }
+spl-vault-token = { git="https://github.com/slothmanxyz/spl-vault-token", version="0.1.0", features = ["cpi"] }
+solana-program = {version="1.10.29"}
+spl-token = {version="3.3.0"}

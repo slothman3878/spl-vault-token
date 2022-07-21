@@ -10,12 +10,12 @@ import {
   getAccount, 
 } from "@solana/spl-token";
 import { SplVaultToken } from "../target/types/spl_vault_token";
-import { VaultRelayer } from "../target/types/vault_relayer";
+import { VaultWrapper } from "../target/types/vault_wrapper";
 import 'dotenv/config';
 
 const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
 
-describe("vault", () => {
+describe("spl-token-vault", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   const connection = provider.connection;
@@ -23,14 +23,15 @@ describe("vault", () => {
   anchor.setProvider(provider);
 
   const program = anchor.workspace.SplVaultToken as Program<SplVaultToken>;
-  const relay_program = anchor.workspace.VaultRelayer as Program<VaultRelayer>;
   const token_program: Program<SplToken> = Spl.token(provider);
+  const wrapper_program = anchor.workspace.VaultWrapper as Program<VaultWrapper>;
 
   let token_mint: web3.PublicKey;
   let token_account: web3.PublicKey;
-  let vault_token_account: web3.PublicKey;
+
   let vault_info, pool, vault_token_mint: web3.PublicKey;
   let vault_info_bump, pool_bump, vault_token_mint_bump: number;
+  let vault_token_account: web3.PublicKey;
 
   beforeEach('initialize vault', async()=>{
     token_mint = await createMint(
@@ -59,6 +60,7 @@ describe("vault", () => {
     );
     const authority = provider.wallet;
     // Add your test here.
+    //let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     const tx = await program.methods.initialize().accounts({
       vaultInfo: vault_info,
       pool: pool,
@@ -71,14 +73,20 @@ describe("vault", () => {
       rent: web3.SYSVAR_RENT_PUBKEY,
       // associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
     }).signers([]).rpc();
+    //let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+    //console.log('difference is', old_balance - new_balance);
 
+    //old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     vault_token_account = await createAssociatedTokenAccount(
       connection, wallet, vault_token_mint, wallet.publicKey
     );
+    //new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
+    //console.log('difference is', old_balance - new_balance);
   })
 
-  it('Pool Interaction', async ()=>{
+  it('Pool interaction', async ()=>{
     const authority = provider.wallet;
+
     let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     const tx_deposit = await program.methods.deposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
@@ -126,11 +134,13 @@ describe("vault", () => {
     )).amount)
   })
 
-  it("CPI test", async()=>{
+  it("cpi invocation", async () => {
     const authority = provider.wallet;
+
     let old_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
 
-    const tx_deposit = await relay_program.methods.deposit(new anchor.BN(10e6)).accounts({
+    /*
+    const tx_deposit = await wrapper_program.methods.deposit(new anchor.BN(10e6)).accounts({
       owner: wallet.publicKey,
       sourceLiquidityAccount: token_account,
       destinationCollateralAccount: vault_token_account,
@@ -155,7 +165,15 @@ describe("vault", () => {
       },
     ]).signers([
       wallet,
-    ]).rpc();
+    ]).rpc();*/
+
+    let buffer = (await wrapper_program.methods.deposit(new anchor.BN(10e6)).accounts({
+      owner: wallet.publicKey,
+      sourceLiquidityAccount: token_account,
+      destinationCollateralAccount: vault_token_account,
+      tokenProgram: token_program.programId,
+    }).instruction()).data;
+    console.log('buffer', buffer);
     let new_balance = 0.000000001 * await provider.connection.getBalance(authority.publicKey);
     console.log('difference is', old_balance - new_balance);
   })

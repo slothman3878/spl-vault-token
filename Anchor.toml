@@ -2,15 +2,20 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-spl_vault_token = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
-vault_relayer = "4iT8Sw1YvbmtRR8qj8ZDwf8J74rxRUTGVHn9vLNHk6FF"
+spl_vault_token = "DtSYEGH3LiHBebux3Lo6LuXoNMM32xBuVvE3nmZv9BF1"
+vault_wrapper = "xNjpLELAS4hhPNgoFWjuVzRg83cZNnippovXHuNXLAo"
+[programs.devnet]
+spl_vault_token = "DtSYEGH3LiHBebux3Lo6LuXoNMM32xBuVvE3nmZv9BF1"
+vault_wrapper = "xNjpLELAS4hhPNgoFWjuVzRg83cZNnippovXHuNXLAo"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "wallet.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+discriminator = "yarn run ts-node ./scripts/discriminator.ts"
+initialize = "yarn run ts-node ./scripts/initialize.ts"
