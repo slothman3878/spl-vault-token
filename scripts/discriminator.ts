@@ -46,23 +46,21 @@ const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
     }).instruction()
   ).data.slice(0, 8);
 
-  // let mintToDiscriminator = (await program.methods.mintTo(new anchor.BN(1))
-  //   .accounts({
-  //     owner: wallet.publicKey,
-  //     sourceLiquidityAccount: wSolTokenAccount.address,
-  //     destinationCollateralAccount: collateralTokenAccount.address,
-  //     strategyInfo: solend_info,
-  //   }).instruction()
-  // ).data.slice(0,8);
+  let mintToDiscriminator = (await program.methods.mintTo(new anchor.BN(1))
+    .accounts({
+      owner: wallet.publicKey,
+      sourceLiquidityAccount: wSolTokenAccount.address,
+      destinationCollateralAccount: collateralTokenAccount.address,
+    }).instruction()
+  ).data.slice(0,8);
 
-  // let redeemDiscriminator = (await program.methods.redeem(new anchor.BN(1))
-  //   .accounts({
-  //     owner: wallet.publicKey,
-  //     sourceCollateralAccount: wSolTokenAccount.address,
-  //     destinationLiquidityAccount: collateralTokenAccount.address,
-  //     strategyInfo: solend_info,
-  //   }).instruction()
-  // ).data.slice(0,8);
+  let redeemDiscriminator = (await program.methods.redeem(new anchor.BN(1))
+    .accounts({
+      owner: wallet.publicKey,
+      sourceCollateralAccount: wSolTokenAccount.address,
+      destinationLiquidityAccount: collateralTokenAccount.address,
+    }).instruction()
+  ).data.slice(0,8);
 
   let withdrawDiscriminator = (await program.methods.withdraw(new anchor.BN(1))
     .accounts({
@@ -73,7 +71,7 @@ const WALLET_PRIVATE_KEY: number[] = JSON.parse(process.env.WALLET_PRIVATE_KEY);
   ).data.slice(0,8);
 
   console.log('deposit', depositDiscriminator.toJSON().data);
-  // console.log('mintTo', mintToDiscriminator.toJSON().data);
+  console.log('mintTo', mintToDiscriminator.toJSON().data);
   console.log('withdraw', withdrawDiscriminator.toJSON().data);
-  // console.log('redeem', redeemDiscriminator.toJSON().data);
+  console.log('redeem', redeemDiscriminator.toJSON().data);
 })()

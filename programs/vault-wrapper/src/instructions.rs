@@ -61,6 +61,28 @@ pub fn deposit_handler<'a, 'b, 'c, 'info,>(
   )?;
   Ok(())
 }
+pub fn mint_to_handler<'a, 'b, 'c, 'info,>(
+  ctx: Context<'_, '_, '_, 'info, Deposit<'info>>, 
+  amount: u64
+) -> Result<()> {
+  let remaining_accounts = ctx.remaining_accounts;
+
+  spl_vault_token::cpi::mint_to(
+    CpiContext::new(
+      remaining_accounts[3].to_account_info(),
+      spl_vault_token::cpi::accounts::PoolInteraction {
+        owner: ctx.accounts.owner.to_account_info(),
+        token_account: ctx.accounts.source_liquidity_account.to_account_info(),
+        vault_token_account: ctx.accounts.destination_collateral_account.to_account_info(),
+        vault_token_mint: remaining_accounts[0].to_account_info(),
+        vault_info: remaining_accounts[1].to_account_info(),
+        pool: remaining_accounts[2].to_account_info(),
+        token_program: ctx.accounts.token_program.to_account_info(),
+      }, 
+    ), amount
+  )?;
+  Ok(())
+}
 pub fn withdraw_handler<'a, 'b, 'c, 'info,>(
   ctx: Context<'_, '_, '_, 'info, Withdraw<'info>>, 
   amount: u64
@@ -68,6 +90,28 @@ pub fn withdraw_handler<'a, 'b, 'c, 'info,>(
   let remaining_accounts = ctx.remaining_accounts;
 
   spl_vault_token::cpi::withdraw(
+    CpiContext::new(
+      remaining_accounts[3].to_account_info(),
+      spl_vault_token::cpi::accounts::PoolInteraction {
+        owner: ctx.accounts.owner.to_account_info(),
+        token_account: ctx.accounts.destination_liquidity_account.to_account_info(),
+        vault_token_account: ctx.accounts.source_collateral_account.to_account_info(),
+        vault_token_mint: remaining_accounts[0].to_account_info(),
+        vault_info: remaining_accounts[1].to_account_info(),
+        pool: remaining_accounts[2].to_account_info(),
+        token_program: ctx.accounts.token_program.to_account_info(),
+      }, 
+    ), amount
+  )?;
+  Ok(())
+}
+pub fn redeem_handler<'a, 'b, 'c, 'info,>(
+  ctx: Context<'_, '_, '_, 'info, Withdraw<'info>>, 
+  amount: u64
+) -> Result<()> {
+  let remaining_accounts = ctx.remaining_accounts;
+
+  spl_vault_token::cpi::redeem(
     CpiContext::new(
       remaining_accounts[3].to_account_info(),
       spl_vault_token::cpi::accounts::PoolInteraction {
